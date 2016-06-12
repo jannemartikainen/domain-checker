@@ -1,0 +1,6 @@
+.main-view 												{ padding-top: 100px; }
+.result-list 											{  }
+	.result-list .icon-container 						{ min-width: 1.2em; display: inline-block; }
+
+.display-inline-block 									{ display: inline-block; }
+.tooltip 												{ min-width: 250px; }
