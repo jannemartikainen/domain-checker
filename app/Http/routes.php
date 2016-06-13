@@ -18,3 +18,6 @@ $app->get('/', function () use ($app) {
 $app->post('check', [
     'as' => 'check', 'uses' => 'DomainAvailabilityChecker@check'
 ]);
+$app->get('check', function () use ($app) {
+    return view('index');
+});

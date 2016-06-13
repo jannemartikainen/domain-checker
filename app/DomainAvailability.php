@@ -74,7 +74,7 @@ class DomainAvailability extends Model implements
                 }
                 elseif(count($parts) == 3) {
                     $domain_name = trim($parts[1]);
-                    $tld = trim($parts[1]);
+                    $tld = trim($parts[2]);
                 }  
 
                 $domains[$i] = DomainAvailability::performCheck($domain_name, $tld);
