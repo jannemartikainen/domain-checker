@@ -35,10 +35,20 @@ class DomainAvailability extends Model implements
     protected static $whois_servers = [
         'fi' => [ 
             'server'        => 'whois.ficora.fi',
-            'response'      => 'Domain not',
-            'status'        => false,
-            'default'       => false
-            ]
+            'response'      => 'Domain not'
+        ],
+        'com' => [ 
+            'server'        => 'whois.crsnic.net',
+            'response'      => 'No match for'
+        ],
+        'net' => [ 
+            'server'        => 'whois.crsnic.net',
+            'response'      => 'No match for'
+        ],
+        'org' => [ 
+            'server'        => 'whois.publicinterestregistry.net',
+            'response'      => 'NOT FOUND'
+        ]
     ];
 
     /**
@@ -51,7 +61,7 @@ class DomainAvailability extends Model implements
         if(is_array($domains)) {
             foreach($domains as $i => $domain) {
                 
-                $tld = trim($domain);
+                $tld = mb_strtolower(trim($domain));
 
                 $parts = explode(".", $domain);
                 if(count($parts) == 1) {
@@ -60,11 +70,11 @@ class DomainAvailability extends Model implements
                 }
                 elseif(count($parts) == 2) {
                     $domain_name = trim($parts[0]);
-                    $tld = 'fi';
+                    $tld = trim($parts[1]);
                 }
                 elseif(count($parts) == 3) {
                     $domain_name = trim($parts[1]);
-                    $tld = 'fi';
+                    $tld = trim($parts[1]);
                 }  
 
                 $domains[$i] = DomainAvailability::performCheck($domain_name, $tld);
@@ -85,7 +95,7 @@ class DomainAvailability extends Model implements
         ];
 
         if($domainName && $tld) {
-            $fp = fsockopen(self::$whois_servers['fi']['server'], 43, $errstr, $errno, 10);
+            $fp = fsockopen(self::$whois_servers[$tld]['server'], 43, $errstr, $errno, 10);
             
             fputs($fp, $domainName.'.'.$tld."\r\n");
             
@@ -100,7 +110,7 @@ class DomainAvailability extends Model implements
             $ret['whois'] = $text;
             
             //Täydennetään server-arrayta
-            if(preg_match("/".self::$whois_servers['fi']['response']."/",$text, $matches)){
+            if(preg_match("/".self::$whois_servers[$tld]['response']."/",$text, $matches)){
                 $ret['status'] = true;
             }
         }
