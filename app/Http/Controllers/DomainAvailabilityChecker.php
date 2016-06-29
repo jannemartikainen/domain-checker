@@ -34,6 +34,7 @@ class DomainAvailabilityChecker extends Controller
                 $domains_other[] = $d;
         }
 
+
         $template = [
             'domains_fi' => DomainAvailability::checkAvailability($domains_fi),
             'domains_other' => DomainAvailability::checkAvailability($domains_other)

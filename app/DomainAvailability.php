@@ -61,9 +61,17 @@ class DomainAvailability extends Model implements
         if(is_array($domains)) {
             foreach($domains as $i => $domain) {
                 
-                $tld = mb_strtolower(trim($domain));
+                //$_domain = preg_replace('/^(?!\-)(?:[a-zA-Z\d\-]{0,62}[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/','',
+                $_domain = mb_strtolower(trim($domain));
+                $_domain = str_replace( array('http://', 'https://'), array('', ''), $_domain );
 
-                $parts = explode(".", $domain);
+                $_slashes = explode('/', $_domain);
+                $_domain = $_slashes[0];
+
+                $_dashes = explode(':', $_domain);
+                $_domain = $_dashes[0];
+
+                $parts = explode(".", $_domain);
                 if(count($parts) == 1) {
                     $domain_name = trim($parts[0]);
                     $tld = 'fi';
@@ -93,7 +101,7 @@ class DomainAvailability extends Model implements
             'status'    => false,
             'whois'     => ''
         ];
-
+        
         if($domainName && $tld) {
             $fp = fsockopen(self::$whois_servers[$tld]['server'], 43, $errstr, $errno, 10);
             
